@@ -7,12 +7,12 @@ const examSchema = mongoose.Schema({
     required: true,
   },
 
-  contentsExams: {
-    type: Buffer,
+  contentExam: {
+    type: String,
     required: true,
   },
 
   dateAdded: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Product', examSchema);
+module.exports = mongoose.model('Exam', examSchema);
