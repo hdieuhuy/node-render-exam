@@ -5,6 +5,7 @@ const fs = require('fs');
 const app = express();
 const MongoClient = require('mongodb').MongoClient;
 const ExamSchema = require('./models/exam');
+const port = process.env.PORT || 5000;
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -20,8 +21,8 @@ var upload = multer({ storage: storage });
 const uri =
   'mongodb+srv://render-latex:admin@cluster0.ibhfl.mongodb.net/exam?retryWrites=true&w=majority';
 
-app.listen(3000, function () {
-  console.log('listening on 3000');
+app.listen(port, function () {
+  console.log(`listening on ${port}`);
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));
