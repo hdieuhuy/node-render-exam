@@ -28,7 +28,7 @@ app.listen(3000, function () {
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile('Welcome to server node');
 });
 
 MongoClient.connect(
