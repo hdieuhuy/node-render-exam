@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const Binary = require('mongodb').Binary;
 const fs = require('fs');
 const app = express();
 const MongoClient = require('mongodb').MongoClient;
