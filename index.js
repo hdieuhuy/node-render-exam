@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const fs = require('fs');
 const app = express();
+const cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;
 const ExamSchema = require('./models/exam');
 const port = process.env.PORT || 5000;
@@ -10,6 +11,12 @@ const port = process.env.PORT || 5000;
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads');
+  },
+  fileFilter(req, file, cb) {
+    if (file.mimetype !== 'image/png') {
+      return cb(new Error('Something went wrong'), false);
+    }
+    cb(null, true);
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -21,14 +28,16 @@ var upload = multer({ storage: storage });
 const uri =
   'mongodb+srv://render-latex:admin@cluster0.ibhfl.mongodb.net/exam?retryWrites=true&w=majority';
 
-app.listen(port, function () {
+app.listen(port, () => {
   console.log(`listening on ${port}`);
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send('Welcome to server node');
+  // res.send('Welcome to server node');
+  res.sendFile(__dirname + '/form.html');
 });
 
 MongoClient.connect(
@@ -70,6 +79,14 @@ MongoClient.connect(
     });
 
     app.post('/api/exam', upload.single('content'), async (req, response) => {
+      if (req.fileValidationError) {
+        return response.status(200).send({
+          error: true,
+          message: 'chỉ nhận file json',
+          data: {},
+        });
+      }
+
       // info file upload
       const file = req.file;
       const nameFile = req.file.originalname.split('.')[0];
@@ -77,7 +94,6 @@ MongoClient.connect(
       const pathFile = `./uploads/${file.originalname}`;
       const infoFile = fs.readFileSync(pathFile);
       const contentExam = JSON.stringify(JSON.parse(infoFile));
-      console.log('pathfile', pathFile);
 
       const examModel = new ExamSchema({
         examCode: nameFile,
