@@ -13,7 +13,7 @@ var storage = multer.diskStorage({
     cb(null, 'uploads');
   },
   fileFilter(req, file, cb) {
-    if (file.mimetype !== 'image/png') {
+    if (file.mimetype !== 'application/json') {
       return cb(new Error('Something went wrong'), false);
     }
     cb(null, true);
@@ -52,11 +52,11 @@ MongoClient.connect(
     const db = client.db('exam');
     const collection = db.collection('exams');
 
-    app.get('/api/exam', (req, res) => {
-      const { examCode } = req.body;
+    app.get('/api/exam/:examCode', (req, res) => {
+      const { examCode } = req.params;
 
       if (!examCode)
-        return res.status(200).send({
+        return res.status(201).send({
           error: true,
           message: 'thiếu trường examCode',
           data: {},
